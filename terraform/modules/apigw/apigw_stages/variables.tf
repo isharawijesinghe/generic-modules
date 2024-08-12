@@ -4,7 +4,6 @@ variable "environment" { type = string }
 variable "name" { type = string }
 variable "tags" { type = map(any) }
 variable "cloudwatch_log_group_arn" {}
-
 variable "stage" {
   type = object({
     name                 = string
