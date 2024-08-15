@@ -1,5 +1,5 @@
 module "cloudwatch_log_group" {
-  source = "../../cloudwatch/log_group"
+  source = "../cloudwatch/log_group"
 
   environment = var.environment
   name        = "${local.name}-log-group"

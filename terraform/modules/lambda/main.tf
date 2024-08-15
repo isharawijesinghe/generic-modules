@@ -5,7 +5,6 @@ locals {
 
 resource "aws_lambda_function" "lambda" {
   function_name = local.name
-  role          = var.lambda_role_arn
   handler       = var.lambda_function_handler
   runtime       = var.runtime
   timeout       = var.timeout
@@ -13,6 +12,7 @@ resource "aws_lambda_function" "lambda" {
 
   filename         = var.lambda_file_location
   source_code_hash = filebase64sha256(var.lambda_file_location)
+  role  = aws_iam_role.lambda_role.arn
 
   dynamic "vpc_config" {
     for_each = var.vpc_config == null ? [] : [

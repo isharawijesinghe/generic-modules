@@ -81,33 +81,23 @@ data "aws_iam_policy_document" "lambda_role_policy_document" {
       "arn:aws:lambda:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:function:${local.name}:${local.alias_name}"
     ]
   }
+}
 
-  dynamic "statement" {
-    for_each = length(local.trigger_by_sqs_arns) == 0 ? [] : [{}]
-    content {
-      sid    = "AllowToConsumeSQS"
-      effect = "Allow"
-      actions = [
-        "sqs:ChangeMessageVisibility",
-        "sqs:DeleteMessage",
-        "sqs:GetQueueAttributes",
-        "sqs:ReceiveMessage",
-      ]
-      resources = local.trigger_by_sqs_arns
-    }
-  }
+resource "aws_iam_role" "lambda_role" {
+  name                 = "${local.name}-role"
+  assume_role_policy   = data.aws_iam_policy_document.lambda_assume_role_policy.json
+  tags = var.tags
+}
 
-  dynamic "statement" {
-    for_each = length(local.kms_decrypt_keys) == 0 ? [] : [{}]
-    content {
-      sid    = "AllowToDecrypt"
-      effect = "Allow"
-      actions = [
-        "kms:Decrypt",
-        "kms:GenerateDataKey*",
-      ]
-      resources = local.kms_decrypt_keys
-    }
-  }
+resource "aws_iam_role_policy" "lambda_role_policy" {
+  name   = "${local.name}-policy-1"
+  policy = data.aws_iam_policy_document.lambda_role_policy_document.json
+  role   = aws_iam_role.lambda_role.name
+}
 
+resource "aws_iam_role_policy" "lambda_role_policy_2" {
+  count = var.lambda_role_policy_json_enable ? 1 : 0
+  role   = aws_iam_role.lambda_role.name
+  name   = "${local.name}-policy-2"
+  policy = var.lambda_role_policy_json
 }

@@ -96,3 +96,22 @@ variable "cloudwatch" {
     If you don't set threshold for an alarm or set it to `null` then that alarm and related metric (if any) won't be created.
   EOF
 }
+
+variable "lambda_role_policy_json_enable" { default = false }
+
+variable "lambda_role_policy_json" {
+  type        = string
+  default     = null
+  description = <<-EOF
+    Optional IAM Policy describing Lambda permissions to other resources.
+    IAM Roles (execution and runtime) will be created by this module internally.
+  EOF
+}
+
+variable "permissions_boundary_arn" {
+  type        = string
+  default     = null
+  description = <<-EOF
+    Permissions boundary to control the maximum permissions related role(s) can have.
+  EOF
+}
