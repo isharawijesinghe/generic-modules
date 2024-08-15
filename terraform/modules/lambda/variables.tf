@@ -7,21 +7,9 @@ variable "lambda_function_name" {
 
 variable "lambda_function_handler" {}
 
-variable "lambda_role_arn" {}
-
 variable "lambda_file_location" {}
 
 variable "tags" { type = map(string) }
-
-variable "lambda_subnet_ids" {
-  type        = list(string)
-  description = "lambda subnet id list"
-}
-
-variable "lambda_security_group_ids" {
-  type        = list(string)
-  description = "lambda security group id list"
-}
 
 variable "enable_lambda_inside_vpc" {
   type    = bool
@@ -33,7 +21,7 @@ variable "runtime" {}
 variable "timeout" {}
 variable "memory_size" {}
 
-variable "lambda_environment_variables" {
+variable "environment_variables" {
   description = "A map of environment variables to pass to the Lambda function"
   type        = map(string)
   default     = {}

@@ -12,7 +12,7 @@ resource "aws_lambda_function" "lambda" {
 
   filename         = var.lambda_file_location
   source_code_hash = filebase64sha256(var.lambda_file_location)
-  role  = aws_iam_role.lambda_role.arn
+  role        = aws_iam_role.lambda_role.arn
 
   dynamic "vpc_config" {
     for_each = var.vpc_config == null ? [] : [
@@ -25,7 +25,7 @@ resource "aws_lambda_function" "lambda" {
   }
 
   environment {
-    variables = merge(var.lambda_environment_variables)
+    variables = merge(var.environment_variables)
   }
 
 }
