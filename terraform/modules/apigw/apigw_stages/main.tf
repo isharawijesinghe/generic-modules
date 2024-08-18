@@ -1,29 +1,8 @@
-#tfsec:ignore:aws-api-gateway-enable-access-logging
 resource "aws_api_gateway_stage" "stage" {
   deployment_id        = var.apigw_deployment_id
   rest_api_id          = var.apigw_rest_api_id
   stage_name           = var.stage.name
   xray_tracing_enabled = var.stage.xray_tracing_enabled
-
-  dynamic "access_log_settings" {
-    for_each = var.stage.access_log_enabled ? [1] : []
-    content {
-      destination_arn = var.cloudwatch_log_group_arn
-      format = join(",", [
-        "$context.identity.sourceIp",
-        "$context.identity.caller",
-        "$context.identity.user",
-        "$context.requestTime",
-        "$context.httpMethod",
-        "$context.resourcePath",
-        "$context.protocol",
-        "$context.status",
-        "$context.responseLength",
-        "$context.requestId",
-        "$context.extendedRequestId"
-      ])
-    }
-  }
   tags = var.tags
 }
 
@@ -44,7 +23,6 @@ resource "aws_api_gateway_method_settings" "method_settings" {
 
 resource "aws_api_gateway_usage_plan" "usage_plan" {
   count = var.stage.throttle_enabled ? 1 : 0
-
   name = "${var.environment}-${var.name}-usage-plan"
 
   api_stages {
